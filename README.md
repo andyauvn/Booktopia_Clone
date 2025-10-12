@@ -23,7 +23,8 @@ Booktopia is a full-featured e-commerce platform that replicates the core functi
 
 | Component | Technology | Description |
 | :--- | :--- | :--- |
-| **Front-end** | **React** | For building a fast, component-based, and dynamic user interface. |
+| **Front-end** | **React** | For building a fast, component-based, and dynamic user interface. 
+| **Build Tool** | **Vite** | Used for blazing-fast development server and optimized production bundling.
 | **Styling** | **Tailwind CSS** | A utility-first CSS framework for rapid and responsive design implementation. |
 | **Back-end** | **Node.js** with **Express** | A lightweight and scalable environment for building the RESTful API and handling server logic. |
 | **Database** | **MongoDB (via Mongoose)** | A flexible NoSQL database to efficiently manage the book catalog, user data, and orders. |
