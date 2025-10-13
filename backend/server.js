@@ -35,5 +35,9 @@ const startServer = async () => {
   }
 };
 
-// 4. Execute the startup function
-startServer();
+// 4. Execute the startup function ONLY if the file is run directly
+if (process.env.NODE_ENV !== 'test') { // Check if the environment is NOT 'test'
+  startServer();
+}
+
+export default app;
