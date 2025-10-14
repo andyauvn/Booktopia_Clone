@@ -11,11 +11,12 @@ Booktopia is a full-featured e-commerce platform that replicates the core functi
 2.  **Shopping Cart & Checkout:** Add/remove items from the cart and complete secure purchases using simulated or integrated online payment.
 3.  **Order Tracking:** Users can view the real-time status and delivery progress of their orders.
 4.  **Wishlist Management:** Users can save books for later purchase in their personal wishlist.
+5.  **Product Reviews:** Submit ratings and comments on purchased books.
 
 ### Admin Features
-1.  **Inventory Management:** Admins can add new books, update stock levels, and modify book details (title, price, description).
+1.  **Inventory Management:** Admins can add new books, update stock levels, and modify book details (including special pricing and internal costs).
 2.  **Sales & Analytics:** Track total sales, view order history, and monitor sales trends.
-3.  **User Management:** Ability to view, edit, or deactivate user accounts.
+3.  **User Management & Moderation:** Ability to view, edit, or deactivate user accounts and approve submitted product reviews.
 
 ---
 
@@ -35,54 +36,50 @@ Booktopia is a full-featured e-commerce platform that replicates the core functi
 
 This section details the primary data models used in the application. We utilize a **NoSQL** structure optimized for speed and flexibility, managed through Mongoose schemas on the server.
 
-| Model | Purpose | Key Fields (Simplified) | Relationships |
+| Model | Purpose | Key Fields (Enhanced) | Relationships |
 | :--- | :--- | :--- | :--- |
-| **User** | Stores user authentication and profile data. | `name`, `email`, `password`, `role` (`user` or `admin`), `wishlist` | Has many **Orders** |
-| **Book** | Core product catalog data. | `title`, `author`, `ISBN`, `price`, ``stockQuantity``, `category`, `description` | Has many **OrderItems** |
-| **Order** | Tracks customer purchases. | `user` (ref **User**), `orderItems` (ref **OrderItem**), `totalPrice`, `status` (`pending`, `shipped`, `delivered`), `shippingAddress` | Belongs to **User** |
-| **OrderItem** | Details of books within a specific order. | `book` (ref **Book**), `quantity`, `priceAtPurchase` | Belongs to **Order** |
+| **User** | Stores auth, profile, and security tokens. | `name`, `email`, **`password` (hashed)**, **`permissions`** (array), **`wishlist`** (ref Book), `resetPasswordToken` | Has many **Orders** |
+| **Book** | Core product catalog, pricing, and specs. | `title`, `author`, `slug`, **`fullPrice`**, **`discountPrice`**, **`costPrice`**, `stockCount`, `categories` (array), **`format`**, **`eBookFileUrl`** | Has many **OrderItems** and **Reviews** |
+| **Review** | User-submitted ratings and comments. | `user` (ref User), `book` (ref Book), `rating` (1-5), `comment`, **`isApproved`** (for moderation) | Belongs to **User** and **Book** |
+| **Order** | Tracks customer purchases. | `user` (ref User), `orderItems` (embedded), `totalPrice`, **`paymentResult`**, **`trackingNumber`**, `status` | Belongs to **User** |
+| **OrderItem** | Details of books within a specific order. | `book` (ref Book), `quantity`, `priceAtPurchase` | Belongs to **Order** |
+*\[Image Placeholder]*
 
-*\[Image Placeholder: Insert a visual representation of your database schema or ERD here, e.g., an image of your MongoDB collections or a simple diagram.]*
 
 ---
 
 ## 🗺️ Project Management & Development Process
 
-This project was managed using an **Agile-like workflow** and visualized using **GitHub Projects** to maintain focus and prioritize feature development.
+This project was managed using an **Agile-like workflow** and visualized using **GitHub Projects** to maintain focus and prioritize feature development. Development strictly followed a **Test-Driven Development (TDD)** methodology.
 
 ### **Development Workflow Highlights:**
 
+* **TDD Cycle:** **Red-Green-Refactor** was used to ensure all business logic (validation, pricing, stock) and API endpoints are fully tested before deployment.
 * **Task Management:** A **GitHub Project board** (Kanban style) was used to track features, bugs, and tasks, moving them through `To Do`, `In Progress`, and `Done` columns.
 * **Version Control:** **Git** and **GitHub** were used for source control, following a feature-branch workflow.
 
-*\[Image Placeholder: Insert a screenshot of your GitHub Project board here showing the flow of tasks.]*
+*\[Image Placeholder]*
 
 ---
 
 ## 🧪 Testing Strategy
 
-Since this project has critical user and financial data, a comprehensive testing approach is recommended, covering the following areas:
+Since this project has critical user and financial data, a comprehensive testing approach is implemented.
 
-### 1. Unit Testing (Focus: Business Logic)
+### 1. Unit Testing (Focus: Business Logic & Security)
+* **Tools:** **Jest**
+* **Key Tests:** Mongoose Schema validation (e.g., non-negative prices, required fields), **Password hashing logic**, User authorization methods, utility functions.
 
-* **Tools:** **Jest** (for Node.js/Express and React)
-* **What to Test:**
-    * **Backend:** Validation logic (e.g., ensuring book prices are positive), stock decrement/increment logic, user authentication middleware.
-    * **Frontend:** Simple utility functions, custom React hooks, and component props rendering correctness.
-
-### 2. Integration Testing (Focus: API Endpoints)
-
-* **Tools:** **Supertest** (for Express/Node.js)
-* **What to Test:**
-    * **Order Flow:** Test the complete sequence: user adds book $\rightarrow$ stock decreases $\rightarrow$ order is created $\rightarrow$ payment is processed (simulated).
-    * **Admin Permissions:** Ensure non-admin users cannot access routes like `/api/admin/add-stock`.
+### 2. Integration Testing (Focus: API Endpoints & Data Flow)
+* **Tools:** **Jest** and **Supertest**
+* **Key Tests:**
+    * **Order Flow:** User purchase sequence (→ stock decrement → order creation → price calculation).
+    * **Permission Checks:** Access control for Admin-only routes (e.g., `/api/admin/books`).
+    * **Review Integration:** Verifying new reviews correctly update the book's cached `rating` and `numReviews`.
 
 ### 3. End-to-End (E2E) Testing (Focus: User Workflow)
-
 * **Tools:** **Cypress** or **Playwright**
-* **What to Test:**
-    * **The "Happy Path":** Full user journey from landing page $\rightarrow$ searching for a book $\rightarrow$ adding to cart $\rightarrow$ logging in $\rightarrow$ checkout $\rightarrow$ viewing the successful order status.
-    * **Failure States:** Test login with bad credentials, attempting to add an out-of-stock book, and cart manipulation.
+* **Key Tests:** Full user journey ("Happy Path"), user authentication/logout, cart persistence, and handling of failure states (e.g., out-of-stock items, bad login).
 
 ---
 
@@ -99,18 +96,18 @@ Since this project has critical user and financial data, a comprehensive testing
     cd backend
     npm install
     # Set up environment variables (DB_URI, JWT_SECRET, etc.) in a .env file
-    npm start
+    npm run dev # Use 'dev' for local development with Nodemon
     ```
 
 3.  **Frontend Setup:**
     ```bash
     cd ../frontend
     npm install
-    npm start
+    npm run dev # Use 'dev' for fast Vite development server
     ```
 
 4.  **Access the App:**
-    The application should now be running on `http://localhost:3000`.
+    The application should now be running on `http://localhost:5173` (Vite's default).
 
 ---
 
