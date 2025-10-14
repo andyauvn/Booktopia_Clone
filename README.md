@@ -42,7 +42,7 @@ This section details the primary data models used in the application. We utilize
 | **Order** | Tracks customer purchases. | `user` (ref **User**), `orderItems` (ref **OrderItem**), `totalPrice`, `status` (`pending`, `shipped`, `delivered`), `shippingAddress` | Belongs to **User** |
 | **OrderItem** | Details of books within a specific order. | `book` (ref **Book**), `quantity`, `priceAtPurchase` | Belongs to **Order** |
 
-*\[Image Placeholder: Insert a visual representation of your database schema or ERD here, e.g., an image of your MongoDB collections or a simple diagram.]*
+
 
 ---
 
@@ -55,7 +55,6 @@ This project was managed using an **Agile-like workflow** and visualized using *
 * **Task Management:** A **GitHub Project board** (Kanban style) was used to track features, bugs, and tasks, moving them through `To Do`, `In Progress`, and `Done` columns.
 * **Version Control:** **Git** and **GitHub** were used for source control, following a feature-branch workflow.
 
-*\[Image Placeholder: Insert a screenshot of your GitHub Project board here showing the flow of tasks.]*
 
 ---
 
