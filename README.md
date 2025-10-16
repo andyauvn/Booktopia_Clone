@@ -37,10 +37,12 @@ This section details the primary data models used in the application. We utilize
 
 | Model | Purpose | Key Fields (Simplified) | Relationships |
 | :--- | :--- | :--- | :--- |
-| **User** | Stores user authentication and profile data. | `name`, `email`, `password`, `role` (`user` or `admin`), `wishlist` | Has many **Orders** |
-| **Book** | Core product catalog data. | `title`, `author`, `ISBN`, `price`, ``stockQuantity``, `category`, `description` | Has many **OrderItems** |
-| **Order** | Tracks customer purchases. | `user` (ref **User**), `orderItems` (ref **OrderItem**), `totalPrice`, `status` (`pending`, `shipped`, `delivered`), `shippingAddress` | Belongs to **User** |
-| **OrderItem** | Details of books within a specific order. | `book` (ref **Book**), `quantity`, `priceAtPurchase` | Belongs to **Order** |
+| **User** | Stores auth, profile, and security tokens. | `name`, `email`, **`password` (hashed)**, **`permissions`** (array), **`wishlist`** (ref Book), `resetPasswordToken` | Has many **Orders** |
+| **Book** | Core product catalog, pricing, and specs. | `title`, `author`, `slug`, **`fullPrice`**, **`discountPrice`**, `stockCount`, **`categories` (ref Category)**, **`format`** | Has many **OrderItems** and **Reviews** |
+| **Category** | **Manages the product hierarchy and navigation.** | `name`, `slug`, **`parent` (self-ref Category)** | Has many **Books** |
+| **Review** | User-submitted ratings and comments. | `user` (ref User), `book` (ref Book), `rating` (1-5), `comment`, **`isApproved`** (for moderation) | Belongs to **User** and **Book** |
+| **Order** | Tracks customer purchases. | `user` (ref User), `orderItems` (embedded), `totalPrice`, **`paymentResult`**, **`trackingNumber`**, `status` | Belongs to **User** |
+| **OrderItem** | Details of books within a specific order. | `book` (ref Book), `quantity`, `priceAtPurchase` | Belongs to **Order** |
 
 
 
