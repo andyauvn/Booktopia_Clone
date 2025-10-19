@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Mail, Lock, User, CheckCircle, AlertTriangle } from 'lucide-react';
 import Button from '../components/Button';
+import FormInput from '../components/FormInput';
+import StatusAlert from '../components/StatusAlert';
 
 // --- VALIDATION HELPERS ---
 
@@ -118,63 +120,6 @@ const Register = () => {
       setIsSubmitting(false);
     }
   };
-
-  // --- UI COMPONENTS ---
-  
-  const InputField = ({ label, name, type = 'text', icon: Icon, error }) => (
-    <div className="space-y-1">
-      <label htmlFor={name} className="block text-sm font-medium text-gray-700">{label}</label>
-      <div className="relative rounded-md shadow-sm">
-        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-          <Icon className="h-5 w-5 text-gray-400" />
-        </div>
-        <input
-          id={name}
-          name={name}
-          type={type}
-          value={form[name]}
-          onChange={handleChange}
-          required
-          className={`
-            block w-full rounded-lg border-2 py-3 pl-10 pr-4 
-            transition duration-150 ease-in-out focus:ring-4
-            ${error 
-              ? 'border-red-500 text-red-900 focus:border-red-500 focus:ring-red-100' 
-              : 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-100'
-            }
-          `}
-          placeholder={label}
-          disabled={isSubmitting}
-        />
-      </div>
-      {error && (
-        <p className="mt-1 flex items-center text-sm text-red-600">
-          <AlertTriangle className="mr-1 h-4 w-4" />
-          {error}
-        </p>
-      )}
-    </div>
-  );
-
-  const StatusAlert = ({ status, message }) => {
-    if (!status) return null;
-
-    const isSuccess = status === 'success';
-    const bgColor = isSuccess ? 'bg-green-100' : 'bg-red-100';
-    const textColor = isSuccess ? 'text-green-800' : 'text-red-800';
-    const Icon = isSuccess ? CheckCircle : AlertTriangle;
-
-    return (
-      <div className={`p-4 rounded-lg ${bgColor} mb-6`} role="alert">
-        <div className="flex items-start">
-          <Icon className={`h-6 w-6 flex-shrink-0 ${textColor} mt-0.5`} />
-          <div className="ml-3">
-            <p className={`text-sm font-medium ${textColor}`}>{message}</p>
-          </div>
-        </div>
-      </div>
-    );
-  };
   
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-inter">
@@ -194,31 +139,40 @@ const Register = () => {
 
           <form className="space-y-6" onSubmit={handleSubmit}>
             
-            <InputField 
+            <FormInput 
               label="Full Name" 
               name="name" 
               icon={User} 
               error={errors.name}
+              value={form.name}
+              onChange={handleChange}
+              isSubmitting={isSubmitting}
             />
 
-            <InputField 
+            <FormInput 
               label="Email Address" 
               name="email" 
               type="email" 
               icon={Mail} 
               error={errors.email}
+              value={form.email}
+              onChange={handleChange}
+              isSubmitting={isSubmitting}
             />
 
-            <InputField 
+            <FormInput 
               label="Password" 
               name="password" 
               type="password" 
               icon={Lock} 
               error={errors.password}
+              value={form.password}
+              onChange={handleChange}
+              isSubmitting={isSubmitting}
             />
 
             <div>
-                <Button type='submit' disabled={isSubmitting} color='green' size ='lg' >
+                <Button type='submit' disabled={isSubmitting} color='green' size ='lg' className='w-full' >
                     {isSubmitting ? (
                     <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>

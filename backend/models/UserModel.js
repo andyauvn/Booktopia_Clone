@@ -20,10 +20,10 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: [true, 'Password is required'],
-        minlength: [6, 'Password must be at least 6 characters long'],
-        maxlength: [32, 'Password cannot exceed 32 characters'],
-        match: [/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d\s]).{6,32}$/,
-                'Password must be 6-32 characters long, include uppercase, lowercase, a number, and a special character.'
+        minlength: [8, 'Password must be at least 8 characters long'],
+        maxlength: [128, 'Password cannot exceed 128 characters'],
+         match: [/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/,
+                'Password must be 8+ characters long and include uppercase, lowercase, and a number.'
                ],
         // Exclude the password from being returned in query results by default
         select: false,
@@ -41,7 +41,7 @@ const userSchema = new mongoose.Schema({
     // References to books the user wants to buy later
     wishlist: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Book',
+        ref: 'Product',
     }],
     // Used for password reset functionality
     resetPasswordToken: String,

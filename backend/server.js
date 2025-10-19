@@ -4,6 +4,8 @@ import 'dotenv/config'; // Loads environment variables
 import express from 'express';
 import mongoose from 'mongoose';
 
+import userRoutes from './routes/userRoutes.js'; // Importing the user routes
+
 const app = express();
 
 const PORT = process.env.PORT || 8001;
@@ -16,6 +18,8 @@ app.use(express.json());
 app.get('/', (req, res) => {
   res.send('Booktopia Backend API is running!');
 });
+app.use('/api/users', userRoutes); // userRoutes
+
 
 // Server Start Function
 const startServer = async () => {
