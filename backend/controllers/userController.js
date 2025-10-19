@@ -27,7 +27,7 @@ const registerUser = asyncHandler(async (req, res) => {
         password,
         // Default permissions are set in the schema, no need to pass them here
     });
-
+    console.log('User created')
     if (user) {
         // HTTP 201 Created - Respond with user data (excluding the hashed password)
         res.status(201).json({

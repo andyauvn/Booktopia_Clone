@@ -3,6 +3,7 @@
 import 'dotenv/config'; // Loads environment variables
 import express from 'express';
 import mongoose from 'mongoose';
+import { notFound, errorHandler } from './middleware/errorMiddleware.js'; // error handlers
 
 import userRoutes from './routes/userRoutes.js'; // Importing the user routes
 
@@ -13,13 +14,23 @@ const MONGO_URI = process.env.MONGO_URI;
 
 // Middleware
 app.use(express.json());
+// ---------------------------------------------
 
 // Route
 app.get('/', (req, res) => {
   res.send('Booktopia Backend API is running!');
 });
-app.use('/api/users', userRoutes); // userRoutes
+// ---------------------------------------------
 
+// -----  API ROUTES -----
+app.use('/api/users', userRoutes); // userRoutes
+// ---------------------------------------------
+
+
+// --- ERROR HANDLERS (MUST BE AFTER ROUTES) ---
+app.use(notFound);
+app.use(errorHandler);
+// ---------------------------------------------
 
 // Server Start Function
 const startServer = async () => {
