@@ -3,6 +3,7 @@
 import 'dotenv/config'; // Loads environment variables
 import express from 'express';
 import mongoose from 'mongoose';
+import cors from 'cors'; 
 import { notFound, errorHandler } from './middleware/errorMiddleware.js'; // error handlers
 
 import userRoutes from './routes/userRoutes.js'; // Importing the user routes
@@ -13,6 +14,7 @@ const PORT = process.env.PORT || 8001;
 const MONGO_URI = process.env.MONGO_URI;
 
 // Middleware
+app.use(cors());
 app.use(express.json());
 // ---------------------------------------------
 

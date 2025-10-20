@@ -1,24 +1,36 @@
+import React from 'react';
 import { CheckCircle, AlertTriangle } from 'lucide-react';
 
-
 const StatusAlert = ({ status, message }) => {
-    if (!status) return null;
+    if (!status || !message) return null;
 
-    const isSuccess = status === 'success';
-    const bgColor = isSuccess ? 'bg-green-100' : 'bg-red-100';
-    const textColor = isSuccess ? 'text-green-800' : 'text-red-800';
-    const Icon = isSuccess ? CheckCircle : AlertTriangle;
+    let icon, bgColor, textColor, iconColor;
+
+    if (status === 'success') {
+        icon = CheckCircle;
+        bgColor = 'bg-green-100';
+        textColor = 'text-green-800';
+        iconColor = 'text-green-500';
+    } else if (status === 'error') {
+        icon = AlertTriangle;
+        bgColor = 'bg-red-100';
+        textColor = 'text-red-800';
+        iconColor = 'text-red-500';
+    } else {
+        return null;
+    }
+    
+    const IconComponent = icon;
 
     return (
-        <div className={`p-4 rounded-xl ${bgColor} mb-6 border ${isSuccess ? 'border-green-300' : 'border-red-300'}`} role="alert">
-        <div className="flex items-start">
-            <Icon className={`h-6 w-6 flex-shrink-0 ${textColor} mt-0.5`} />
-            <div className="ml-3">
-            <p className={`text-sm font-semibold ${textColor}`}>{isSuccess ? 'Success' : 'Error'}</p>
-            <p className={`text-sm ${textColor} mt-1`}>{message}</p>
+        <div className={`p-4 rounded-xl ${bgColor} flex items-start space-x-3 transition-all duration-300 ease-in-out border border-current ${textColor}`} role="alert">
+            <IconComponent className={`h-6 w-6 flex-shrink-0 mt-0.5 ${iconColor}`} aria-hidden="true" />
+            <div className="flex-1">
+                <p className="text-sm font-medium">{status === 'success' ? 'Success!' : 'Error!'}</p>
+                <p className="text-sm mt-0.5">{message}</p>
             </div>
         </div>
-        </div>
     );
-}
-export default StatusAlert
+};
+
+export default StatusAlert;

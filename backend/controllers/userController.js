@@ -29,6 +29,9 @@ const registerUser = asyncHandler(async (req, res) => {
     });
     console.log('User created')
     if (user) {
+
+        // Log successful registration
+        console.log(`✅ New user account created for: ${user.email} (ID: ${user._id})`);
         // HTTP 201 Created - Respond with user data (excluding the hashed password)
         res.status(201).json({
             _id: user._id,
