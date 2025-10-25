@@ -4,6 +4,7 @@ import { Mail, Lock, CheckCircle, AlertTriangle } from 'lucide-react';
 import Button from '../components/Button.jsx';
 import FormInput from '../components/FormInput.jsx';
 import StatusAlert from '../components/StatusAlert.jsx';
+import { useNavigate, Link } from 'react-router-dom';
 
 // Basic email regex (matches the one often used in frontend validation)
 const EMAIL_REGEX = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
@@ -17,7 +18,7 @@ const Login = ({ onLoginSuccess }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState(null); // 'success', 'error', or null
   const [statusMessage, setStatusMessage] = useState('');
-
+  const navigate = useNavigate();
   // --- FORM HANDLING ---
 
   const handleChange = (e) => {
@@ -164,8 +165,11 @@ const Login = ({ onLoginSuccess }) => {
           </div>
         </form>
 
-        <p className='mt-6 text-center text-sm text-gray-500'>
-          Don't have an account? <a href="/register" className='font-medium text-blue-600 hover:text-blue-500 transition duration-150'>Register Here</a>
+       <p className='mt-6 text-center text-sm text-gray-500'>
+          Don't have an account?{' '}
+          <Link to="/register" className='font-medium text-blue-600 hover:text-blue-500 transition duration-150'>
+            Register Here
+          </Link>
         </p>
       </div>
     </div>

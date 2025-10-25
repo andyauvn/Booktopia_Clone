@@ -4,6 +4,8 @@ import Button from '../components/Button';
 import FormInput from '../components/FormInput';
 import StatusAlert from '../components/StatusAlert';
 import { API_BASE_URL } from '../config/apiConfig';
+import { useNavigate, Link } from 'react-router-dom';
+
 // --- VALIDATION HELPERS ---
 
 // Matches the Mongoose regex for password complexity: 
@@ -23,6 +25,7 @@ const Register = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState(null); // 'success', 'error', or null
   const [statusMessage, setStatusMessage] = useState('');
+    const navigate = useNavigate();
 
   // --- FORM HANDLING ---
 
@@ -174,10 +177,10 @@ const Register = () => {
         </form>
 
         <p className="mt-8 text-center text-sm text-gray-500">
-          Already have an account? 
-          <a href="#" className="font-semibold leading-6 text-blue-600 hover:text-blue-500 ml-1">
+          Already have an account?{' '}
+          <Link to="/login" className="font-semibold leading-6 text-blue-600 hover:text-blue-500 ml-1">
             Sign In
-          </a>
+          </Link>
         </p>
       </div>
     </div>
