@@ -52,7 +52,7 @@ const destroyData = async () => {
 
         await User.deleteMany(); // Deletes all users
 
-        console.log('🔥 Data destroyed successfully!');
+        console.log('Data destroyed successfully!');
         process.exit();
     } catch (error) {
         console.error(`Error during data destruction: ${error.message}`);

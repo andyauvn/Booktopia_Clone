@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import createSlug from './utils/slugify.js';
+import createSlug from '../utils/slugify.js';
 
 const categorySchema = new mongoose.Schema({
     name: {

@@ -32,7 +32,7 @@ const Button = ({ children, color = 'blue', size = 'md', className = '', disable
   // 3. Base Styles (Includes disabled state styles)
   // disabled:hover:bg-current prevents the hover effect from changing the disabled button's color
   const baseClasses =
-    "font-medium rounded-xl transition duration-150 ease-in-out focus:outline-none focus:ring-4 focus:ring-opacity-50 inline-flex items-center justify-center " +
+    "cursor-pointer font-medium rounded-xl transition duration-150 ease-in-out focus:outline-none focus:ring-4 focus:ring-opacity-50 inline-flex items-center justify-center " +
     "disabled:opacity-60 disabled:cursor-not-allowed disabled:shadow-none disabled:hover:bg-current";
 
   // Get selected styles. Fallback to 'blue' if an invalid color is passed.

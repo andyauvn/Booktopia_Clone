@@ -1,5 +1,6 @@
 import User from '../models/UserModel.js';
 import asyncHandler from 'express-async-handler'; // A helpful utility for handling exceptions inside async routes
+import generateToken from '../utils/generateToken.js';
 
 /**
  * @desc    Register a new user
@@ -30,6 +31,10 @@ const registerUser = asyncHandler(async (req, res) => {
     console.log('User created')
     if (user) {
 
+         // --- JWT GENERATION ---
+        const token = user.getSignedJwtToken();
+        // ----------------------
+
         // Log successful registration
         console.log(`✅ New user account created for: ${user.email} (ID: ${user._id})`);
         // HTTP 201 Created - Respond with user data (excluding the hashed password)
@@ -38,7 +43,7 @@ const registerUser = asyncHandler(async (req, res) => {
             name: user.name,
             email: user.email,
             permissions: user.permissions,
-            // NOTE: In a real app, you would generate and send a JWT here.
+            token, // Send the token to the client!
             message: 'User registered successfully. Please log in.'
         });
     } else {
@@ -48,4 +53,53 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 });
 
-export { registerUser };
+
+/**
+ * @desc    Authenticate user & get token (Login)
+ * @route   POST /api/users/login
+ * @access  Public
+ */
+const authUser = asyncHandler(async (req, res) => {
+    const { email, password } = req.body;
+
+    // Explicitly select the password hash for comparison
+    const user = await User.findOne({ email }).select('+password');
+
+    // Check if user exists AND if the password matches using the instance method
+    if (user && (await user.matchPassword(password))) {
+        // Successful login: Respond with user data and the token
+        res.json({
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            permissions: user.permissions,
+            token: generateToken(user), // Generate and send the JWT
+        });
+    } else {
+        res.status(401); // 401 Unauthorized
+        throw new Error('Invalid email or password');
+    }
+});
+
+/**
+ * @desc    Logout user / Clear cookie
+ * @route   POST /api/users/logout
+ * @access  Public (Anyone can hit this to clear their cookie)
+ */
+const logoutUser = asyncHandler(async (req, res) => {
+    // Clear the HTTP-only cookie by setting it to an empty value and an immediate expiry
+    res.cookie('jwt', '', {
+        httpOnly: true,
+        expires: new Date(0), // Set expiry to a past date (January 1, 1970)
+        secure: process.env.NODE_ENV !== 'development', // Use secure in production
+        sameSite: 'strict', // Protect against CSRF attacks
+    });
+
+    console.log(`✅ User logged out successfully.`);
+    // HTTP 200 OK
+    res.status(200).json({ message: 'User logged out successfully' });
+});
+
+
+
+export { registerUser, authUser, logoutUser };

@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import createSlug from './utils/slugify';
+import createSlug from '../utils/slugify';
 
 const productSchema = new mongoose.Schema({
     title: {
