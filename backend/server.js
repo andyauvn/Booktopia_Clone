@@ -4,6 +4,7 @@ import 'dotenv/config'; // Loads environment variables
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors'; 
+import cookieParser from 'cookie-parser';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js'; // error handlers
 
 import userRoutes from './routes/userRoutes.js'; // Importing the user routes
@@ -14,8 +15,12 @@ const PORT = process.env.PORT || 8001;
 const MONGO_URI = process.env.MONGO_URI;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:5173', // Replace with your frontend URL
+    credentials: true // This is essential for sending/receiving cookies
+}));
 app.use(express.json());
+app.use(cookieParser());
 // ---------------------------------------------
 
 // Route

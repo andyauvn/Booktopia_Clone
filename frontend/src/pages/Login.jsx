@@ -5,9 +5,11 @@ import Button from '../components/Button.jsx';
 import FormInput from '../components/FormInput.jsx';
 import StatusAlert from '../components/StatusAlert.jsx';
 import { useNavigate, Link } from 'react-router-dom';
+import { API_BASE_URL } from '../config/apiConfig.js';
+
 
 // Basic email regex (matches the one often used in frontend validation)
-const EMAIL_REGEX = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
+const EMAIL_REGEX = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
 const Login = ({ onLoginSuccess }) => {
   const [form, setForm] = useState({
@@ -58,45 +60,46 @@ const Login = ({ onLoginSuccess }) => {
     setStatusMessage('');
 
     if (!validateForm()) {
+      setStatus('error');
+      setStatusMessage('Please enter valid email and password.');
       return;
     }
 
     setIsSubmitting(true);
 
     try {
-      const response = await fetch('/api/users/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: form.email,
-          password: form.password
-        }),
-      });
+       const response = await fetch(`${API_BASE_URL}/api/users/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email: form.email,
+                password: form.password,
+            })
+        });
 
       const data = await response.json();
 
-      if (response.ok) {
-        // Successful Login
-        setStatus('success');
-        // In a real application, you would handle the JWT token received here.
-        setStatusMessage(`Welcome back, ${data.name}! You are now logged in.`);
-        
-        // Use a slight delay before calling onLoginSuccess to show the alert message
-        setTimeout(() => {
-          if (onLoginSuccess) {
-            onLoginSuccess(data);
-          }
-        }, 1500);
+        if (response.ok) {
+            
+            setStatus('success');
+            setStatusMessage('Login successful! Redirecting...');
 
-      } else {
-        // Error response from server
-        setStatus('error');
-        // Fallback message if the server doesn't provide a specific error message
-        const message = data.message || 'Login failed. Please check your credentials.';
-        setStatusMessage(message);
-      }
+            if (onLoginSuccess) { 
+                // Pass user data to the main App component
+                onLoginSuccess({ 
+                    id: data._id, 
+                    name: data.name, 
+                    email: data.email 
+                }); 
+            }
+
+            setTimeout(() => { navigate('/books'); }, 1000); 
+
+        } else {
+            // Server returned an error (e.g., Invalid credentials)
+            setStatus('error');
+            setStatusMessage(data.message || 'Login failed. Please check your credentials.');
+        }
     } catch (error) {
       // Network or unexpected error
       console.error('Login request error:', error);

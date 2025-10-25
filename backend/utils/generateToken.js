@@ -23,8 +23,8 @@ const generateToken = (res, userId, permissions) => {
     res.cookie('jwt', token, {
         httpOnly: true,
         // secure: process.env.NODE_ENV !== 'development', // Uncomment for production
-        secure: false, // For local development simplicity
-        sameSite: 'strict', // Recommended for CSRF protection
+        secure: true, // For local development simplicity
+        sameSite: 'None', // Recommended for CSRF protection
         maxAge: (process.env.JWT_COOKIE_MAX_AGE || 30) * 24 * 60 * 60 * 1000, // 30 days in milliseconds
     });
     

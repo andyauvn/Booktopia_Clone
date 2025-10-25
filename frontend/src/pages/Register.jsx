@@ -25,7 +25,7 @@ const Register = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState(null); // 'success', 'error', or null
   const [statusMessage, setStatusMessage] = useState('');
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
   // --- FORM HANDLING ---
 
@@ -77,7 +77,6 @@ const Register = () => {
 
     setIsSubmitting(true);
     
-    // Simulate API call to register user
     try {
         const response = await fetch(`${API_BASE_URL}/api/users/register`, {
             method: 'POST',
@@ -91,6 +90,7 @@ const Register = () => {
             setStatus('success');
             setStatusMessage(data.message || 'Registration successful!');
             setForm({ name: '', email: '', password: '' }); // Clear form on success
+            setTimeout(() => { navigate('/login'); }, 1000); 
         } else {
             // Handle server-side validation/duplicate errors
             setStatus('error');
